@@ -10,11 +10,16 @@ import {
 import { SectionHeading } from "@/components/shared/section-heading";
 import { Reveal } from "@/components/shared/reveal";
 import { ProductCard } from "@/components/product/product-card";
+import { PromoBanner } from "@/components/home/promo-banner";
 import { newArrivals } from "@/lib/mock-data";
 
 export function NewArrivals() {
   return (
     <section className="container py-20 md:py-28">
+      <div className="mb-14 md:mb-16">
+        <PromoBanner />
+      </div>
+
       <SectionHeading
         eyebrow="Just Landed"
         title="New Arrivals"

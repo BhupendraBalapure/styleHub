@@ -4,90 +4,120 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { categories } from "@/lib/mock-data";
+import { categories, heroImage } from "@/lib/mock-data";
+import { cn } from "@/lib/utils";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-const PANELS = [
-  {
-    label: "Women",
-    href: "/shop?collection=women",
-    image: categories.find((c) => c.slug === "women")!.image,
-    eyebrow: "The Women's Edit",
-  },
-  {
-    label: "Men",
-    href: "/shop?collection=men",
-    image: categories.find((c) => c.slug === "men")!.image,
-    eyebrow: "The Men's Edit",
-  },
-];
+const tiles = categories.map((c) => ({
+  label: c.name,
+  href: `/shop?collection=${c.slug}`,
+  image: c.image,
+  eyebrow: "The Edit",
+}));
 
 export function Hero() {
   return (
-    <section className="relative h-[100svh] min-h-[620px] w-full overflow-hidden bg-ink">
-      <div className="grid h-full grid-cols-1 md:grid-cols-2">
-        {PANELS.map((panel, i) => (
-          <motion.div
-            key={panel.label}
-            initial={{ opacity: 0, x: i === 0 ? -48 : 48 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1, delay: 0.15 + i * 0.12, ease }}
-            className={`group relative h-[50svh] overflow-hidden md:h-full ${
-              i === 1 ? "md:border-l md:border-white/10" : ""
-            }`}
-          >
-            <Link href={panel.href} className="block h-full w-full" aria-label={`Shop ${panel.label}`}>
-              <Image
-                src={panel.image}
-                alt={`${panel.label}'s collection`}
-                fill
-                priority
-                sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-cover object-center transition-transform ease-out [transition-duration:1200ms] group-hover:scale-[1.06]"
-              />
-              {/* Gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/40 transition-colors duration-500 group-hover:from-black/90" />
+    <section className="w-full bg-ink">
+      <div className="grid grid-cols-2 gap-1.5 md:h-[100svh] md:grid-cols-4 md:grid-rows-2">
+        {/* Big statement banner */}
+        <BannerTile
+          index={0}
+          href="/shop"
+          image={heroImage}
+          className="col-span-2 aspect-[16/10] sm:aspect-[2/1] md:col-span-2 md:row-span-2 md:aspect-auto"
+          big
+        />
 
-              {/* Caption */}
-              <div className="absolute inset-x-0 bottom-0 p-8 text-white md:p-12">
-                <motion.div
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.5 + i * 0.12, ease }}
-                >
-                  <p className="mb-2 text-xs uppercase luxe-track text-gold">
-                    {panel.eyebrow}
-                  </p>
-                  <h2 className="font-display text-4xl uppercase leading-none tracking-tight md:text-5xl lg:text-6xl">
-                    {panel.label}
-                  </h2>
-                  <span className="mt-4 inline-flex items-center gap-2 text-sm uppercase tracking-[0.2em]">
-                    Shop {panel.label}
-                    <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" />
-                  </span>
-                  <span className="mt-3 block h-px w-12 bg-gold transition-all duration-500 group-hover:w-28" />
-                </motion.div>
-              </div>
-            </Link>
-          </motion.div>
+        {/* Collection banners */}
+        {tiles.map((t, i) => (
+          <BannerTile
+            key={t.label}
+            index={i + 1}
+            href={t.href}
+            image={t.image}
+            label={t.label}
+            eyebrow={t.eyebrow}
+            className="aspect-[3/4] md:aspect-auto"
+          />
         ))}
       </div>
-
-      {/* Center brand mark */}
-      <motion.div
-        initial={{ opacity: 0, y: -12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.9, delay: 0.4, ease }}
-        className="pointer-events-none absolute left-1/2 top-[14svh] -translate-x-1/2 text-center md:top-[20%]"
-      >
-        <p className="text-[10px] uppercase luxe-track text-white/70 sm:text-xs">
-          Autumn / Winter 2026
-        </p>
-        <p className="mt-2 hidden font-display text-sm uppercase tracking-[0.35em] text-white/90 sm:block">
-          The New Season
-        </p>
-      </motion.div>
     </section>
+  );
+}
+
+function BannerTile({
+  href,
+  image,
+  label,
+  eyebrow,
+  className,
+  big = false,
+  index,
+}: {
+  href: string;
+  image: string;
+  label?: string;
+  eyebrow?: string;
+  className?: string;
+  big?: boolean;
+  index: number;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.99 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.7, delay: index * 0.08, ease }}
+      className={cn("group relative overflow-hidden bg-muted", className)}
+    >
+      <Link href={href} className="block h-full w-full" aria-label={big ? "Shop the collection" : `Shop ${label}`}>
+        <Image
+          src={image}
+          alt={big ? "StyleHub Autumn/Winter 2026" : `${label} collection`}
+          fill
+          priority={index < 3}
+          sizes={big ? "(max-width: 768px) 100vw, 50vw" : "(max-width: 768px) 50vw, 25vw"}
+          className="object-cover object-center transition-transform ease-out [transition-duration:1100ms] group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-black/40 transition-colors duration-500 group-hover:from-black/85" />
+
+        {big ? (
+          <div className="absolute inset-0 flex flex-col justify-end p-6 text-white sm:p-10 lg:p-14">
+            <motion.div
+              initial={{ opacity: 0, y: 28 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 0.4, ease }}
+            >
+              <p className="mb-3 text-xs uppercase luxe-track text-gold">
+                Autumn / Winter 2026
+              </p>
+              <h1 className="max-w-lg font-display text-4xl uppercase leading-[0.95] tracking-tight sm:text-5xl lg:text-7xl">
+                Quiet Luxury,
+                <br />
+                <span className="gold-gradient-text">Boldly Worn.</span>
+              </h1>
+              <div className="mt-7">
+                <span className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-medium text-ink transition-colors duration-300 group-hover:bg-gold">
+                  Shop the Collection
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </span>
+              </div>
+            </motion.div>
+          </div>
+        ) : (
+          <div className="absolute inset-x-0 bottom-0 p-4 text-white sm:p-5">
+            <p className="text-[10px] uppercase luxe-track text-gold">{eyebrow}</p>
+            <h3 className="mt-0.5 font-display text-xl uppercase tracking-tight sm:text-2xl">
+              {label}
+            </h3>
+            <span className="mt-1 inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.18em] text-white/85">
+              Shop
+              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+            </span>
+            <span className="mt-2 block h-px w-8 bg-gold transition-all duration-500 group-hover:w-16" />
+          </div>
+        )}
+      </Link>
+    </motion.div>
   );
 }

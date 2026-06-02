@@ -637,6 +637,7 @@ export const heroImage = unsplash(EDITORIAL[0], 1920, 2400);
 export const heroImageAlt = unsplash(EDITORIAL[1], 1200, 1500);
 export const brandStoryImage = unsplash(EDITORIAL[2], 1200, 1500);
 export const brandStoryImageAlt = unsplash(EDITORIAL[9], 1000, 1300);
+export const promoBannerImage = unsplash(EDITORIAL[7], 1600, 600);
 
 // ---------------------------------------------------------------------------
 // Coupons (used by the cart)
