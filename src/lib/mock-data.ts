@@ -493,6 +493,13 @@ export const products: Product[] = [
   },
 ];
 
+// All product prices are authored in base units; convert to INR (₹).
+const USD_TO_INR = 80;
+for (const p of products) {
+  p.price = p.price * USD_TO_INR;
+  if (p.compareAtPrice) p.compareAtPrice = p.compareAtPrice * USD_TO_INR;
+}
+
 // ---------------------------------------------------------------------------
 // Derived collections
 // ---------------------------------------------------------------------------
@@ -644,16 +651,16 @@ export const coupons: Coupon[] = [
   {
     code: "LUXE50",
     type: "fixed",
-    value: 50,
-    minSubtotal: 400,
-    description: "$50 off orders over $400",
+    value: 4000,
+    minSubtotal: 32000,
+    description: "₹4,000 off orders over ₹32,000",
   },
   {
     code: "WELCOME15",
     type: "percent",
     value: 15,
-    minSubtotal: 250,
-    description: "15% off orders over $250",
+    minSubtotal: 20000,
+    description: "15% off orders over ₹20,000",
   },
 ];
 

@@ -19,9 +19,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { cartTotals, useCartStore, type ShippingMethod } from "@/store/cart";
+import {
+  cartTotals,
+  useCartStore,
+  FREE_SHIPPING_THRESHOLD,
+  SHIPPING_RATES,
+  type ShippingMethod,
+} from "@/store/cart";
 import { useMounted } from "@/hooks/use-mounted";
 import { makeOrderId, useOrderStore } from "@/store/order";
+import { createOrder } from "@/lib/actions/order";
 import { formatPrice, cn } from "@/lib/utils";
 
 const schema = z.object({
@@ -107,14 +114,17 @@ export function CheckoutView() {
   };
   const back = () => setStep((s) => Math.max(0, s - 1));
 
-  const placeOrder = form.handleSubmit((values) => {
+  const placeOrder = form.handleSubmit(async (values) => {
     const id = makeOrderId();
+    const shippingAddress = `${values.address}, ${values.city}, ${values.state} ${values.zip}, ${values.country}`;
+
+    // Keep a client-side copy so the confirmation page renders instantly.
     addOrder({
       id,
       createdAt: new Date().toISOString(),
       email: values.email,
       name: `${values.firstName} ${values.lastName}`,
-      address: `${values.address}, ${values.city}, ${values.state} ${values.zip}, ${values.country}`,
+      address: shippingAddress,
       items,
       subtotal: totals.subtotal,
       discount: totals.discount,
@@ -124,6 +134,30 @@ export function CheckoutView() {
       shippingMethod: method,
       couponCode: coupon?.code,
     });
+
+    // Persist to the database (links to the signed-in user if any).
+    await createOrder({
+      number: id,
+      email: values.email,
+      shippingAddress,
+      subtotal: totals.subtotal,
+      discount: totals.discount,
+      shipping: totals.shipping,
+      tax: totals.tax,
+      total: totals.total,
+      shippingMethod: method,
+      couponCode: coupon?.code,
+      items: items.map((i) => ({
+        productId: i.productId,
+        name: i.name,
+        image: i.image,
+        price: i.price,
+        size: i.size,
+        color: i.color,
+        quantity: i.quantity,
+      })),
+    });
+
     clearCart();
     router.push(`/checkout/success?order=${id}`);
   });
@@ -195,7 +229,11 @@ export function CheckoutView() {
                     icon={Truck}
                     title="Standard Delivery"
                     desc="3–5 business days"
-                    price={totals.subtotal >= 500 ? "Free" : formatPrice(25)}
+                    price={
+                      totals.subtotal >= FREE_SHIPPING_THRESHOLD
+                        ? "Free"
+                        : formatPrice(SHIPPING_RATES.standard)
+                    }
                   />
                   <DeliveryOption
                     active={method === "express"}
@@ -203,7 +241,7 @@ export function CheckoutView() {
                     icon={Zap}
                     title="Express Delivery"
                     desc="1–2 business days"
-                    price={formatPrice(45)}
+                    price={formatPrice(SHIPPING_RATES.express)}
                   />
                 </div>
               </section>

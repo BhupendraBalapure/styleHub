@@ -14,7 +14,7 @@ import {
 import { RatingStars } from "@/components/shared/rating-stars";
 import { VariantPicker } from "@/components/product/variant-picker";
 import { SizeGuide } from "@/components/product/size-guide";
-import { useCartStore } from "@/store/cart";
+import { useCartStore, FREE_SHIPPING_THRESHOLD } from "@/store/cart";
 import { useWishlistStore } from "@/store/wishlist";
 import { useUIStore } from "@/store/ui";
 import { useMounted } from "@/hooks/use-mounted";
@@ -158,7 +158,10 @@ export function ProductInfo({ product }: { product: Product }) {
 
       {/* Trust badges */}
       <div className="grid grid-cols-3 gap-3 border-y border-border py-5 text-center">
-        <Trust icon={Truck} label="Free shipping over $500" />
+        <Trust
+          icon={Truck}
+          label={`Free shipping over ${formatPrice(FREE_SHIPPING_THRESHOLD)}`}
+        />
         <Trust icon={Undo2} label="30-day returns" />
         <Trust icon={ShieldCheck} label="2-year guarantee" />
       </div>
@@ -175,8 +178,9 @@ export function ProductInfo({ product }: { product: Product }) {
         <AccordionItem value="shipping">
           <AccordionTrigger>Shipping &amp; Returns</AccordionTrigger>
           <AccordionContent className="text-muted-foreground">
-            Complimentary standard shipping on orders over $500. Express options
-            available at checkout. Free returns within 30 days of delivery.
+            Complimentary standard shipping on orders over{" "}
+            {formatPrice(FREE_SHIPPING_THRESHOLD)}. Express options available at
+            checkout. Free returns within 30 days of delivery.
           </AccordionContent>
         </AccordionItem>
       </Accordion>

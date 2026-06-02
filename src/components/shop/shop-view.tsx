@@ -35,7 +35,7 @@ const COLLECTIONS: { label: string; value: CollectionSlug | "all" }[] = [
 ];
 
 const ALL_SIZES = ["XS", "S", "M", "L", "XL", "38", "39", "40", "41", "42", "43", "44", "One Size"];
-const MAX_PRICE = 1300;
+const MAX_PRICE = 104000;
 
 export function ShopView({
   initialCollection = "all",
@@ -145,9 +145,9 @@ export function ShopView({
         </div>
         <Slider
           value={[price]}
-          min={100}
+          min={8000}
           max={MAX_PRICE}
-          step={10}
+          step={1000}
           onValueChange={(v) => setPrice(v[0])}
         />
       </div>

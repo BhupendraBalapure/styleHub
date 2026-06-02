@@ -5,14 +5,14 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-/** Format a number as USD currency. */
+/** Format a number as INR currency (₹, Indian digit grouping). */
 export function formatPrice(
   amount: number,
   opts: Intl.NumberFormatOptions = {}
 ) {
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("en-IN", {
     style: "currency",
-    currency: "USD",
+    currency: "INR",
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
     ...opts,

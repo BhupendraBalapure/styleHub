@@ -59,7 +59,7 @@ export default async function ProductPage({
     offers: {
       "@type": "Offer",
       price: product.price,
-      priceCurrency: "USD",
+      priceCurrency: "INR",
       availability:
         product.stock > 0
           ? "https://schema.org/InStock"

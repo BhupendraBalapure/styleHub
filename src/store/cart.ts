@@ -2,14 +2,14 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { CartItem, Coupon } from "@/types";
 
-const FREE_SHIPPING_THRESHOLD = 500;
-const STANDARD_SHIPPING = 25;
+const FREE_SHIPPING_THRESHOLD = 40000;
+const STANDARD_SHIPPING = 2000;
 
 export type ShippingMethod = "standard" | "express";
 
 const SHIPPING_RATES: Record<ShippingMethod, number> = {
   standard: STANDARD_SHIPPING,
-  express: 45,
+  express: 3600,
 };
 
 interface CartState {
