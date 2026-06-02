@@ -1,0 +1,153 @@
+// StyleHub — Prisma schema (PostgreSQL / Supabase)
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model User {
+  id           String         @id @default(cuid())
+  name         String?
+  email        String         @unique
+  passwordHash String
+  role         Role           @default(USER)
+  createdAt    DateTime       @default(now())
+  orders       Order[]
+  addresses    Address[]
+  wishlist     WishlistItem[]
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  image       String?
+  products    Product[]
+}
+
+model Product {
+  id             String      @id @default(cuid())
+  slug           String      @unique
+  name           String
+  description    String
+  price          Float
+  compareAtPrice Float?
+  images         String[]
+  collection     String
+  categoryName   String
+  sizes          String[]
+  colors         Json
+  rating         Float       @default(0)
+  reviewCount    Int         @default(0)
+  isNew          Boolean     @default(false)
+  isBestSeller   Boolean     @default(false)
+  isTrending     Boolean     @default(false)
+  stock          Int         @default(0)
+  createdAt      DateTime    @default(now())
+  categoryId     String?
+  category       Category?   @relation(fields: [categoryId], references: [id])
+  reviews        Review[]
+  orderItems     OrderItem[]
+
+  @@index([collection])
+}
+
+model Address {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullName  String
+  line1     String
+  city      String
+  state     String
+  zip       String
+  country   String
+  phone     String?
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  number          String      @unique
+  userId          String?
+  user            User?       @relation(fields: [userId], references: [id])
+  email           String
+  status          OrderStatus @default(PAID)
+  subtotal        Float
+  discount        Float       @default(0)
+  shipping        Float       @default(0)
+  tax             Float       @default(0)
+  total           Float
+  shippingMethod  String
+  couponCode      String?
+  shippingAddress String
+  createdAt       DateTime    @default(now())
+  items           OrderItem[]
+
+  @@index([userId])
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id])
+  name      String
+  image     String
+  price     Float
+  size      String
+  color     String
+  quantity  Int
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  author    String
+  avatar    String?
+  rating    Int
+  title     String
+  body      String
+  createdAt DateTime @default(now())
+}
+
+model Coupon {
+  id          String  @id @default(cuid())
+  code        String  @unique
+  type        String // "percent" | "fixed"
+  value       Float
+  minSubtotal Float?
+  description String
+  active      Boolean @default(true)
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+}
