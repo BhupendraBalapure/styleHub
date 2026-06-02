@@ -51,7 +51,7 @@ export default async function AccountLayout({
         <div className="grid gap-8 lg:grid-cols-[220px_1fr]">
           <aside className="space-y-4 lg:sticky lg:top-10 lg:self-start">
             <AccountNav />
-            <div className="hidden border-t border-border pt-4 lg:block">
+            <div className="border-t border-border pt-4">
               <SignOutButton />
             </div>
           </aside>

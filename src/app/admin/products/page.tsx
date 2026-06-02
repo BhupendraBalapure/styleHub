@@ -25,8 +25,8 @@ export default async function AdminProductsPage() {
         </Button>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-border">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto rounded-xl border border-border">
+        <table className="w-full min-w-[640px] text-sm">
           <thead className="border-b border-border bg-secondary/40 text-left text-muted-foreground">
             <tr>
               <th className="p-3 font-medium">Product</th>

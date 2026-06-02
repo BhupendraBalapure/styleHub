@@ -136,8 +136,12 @@ export function ProductInfo({ product }: { product: Product }) {
               <Plus className="h-4 w-4" />
             </button>
           </div>
-          <Button size="lg" className="h-12 flex-1" onClick={handleAdd}>
-            Add to Bag · {formatPrice(product.price * qty)}
+          <Button size="lg" className="h-12 min-w-0 flex-1" onClick={handleAdd}>
+            Add to Bag
+            <span className="hidden sm:inline">
+              {" "}
+              · {formatPrice(product.price * qty)}
+            </span>
           </Button>
           <Button
             size="lg"

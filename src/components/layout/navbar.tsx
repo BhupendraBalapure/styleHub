@@ -188,6 +188,10 @@ export function Navbar() {
                       Wishlist
                     </MobileLink>
                   </div>
+                  <div className="mt-2 flex items-center justify-between border-t px-3 pt-4">
+                    <span className="text-sm text-muted-foreground">Theme</span>
+                    <ThemeToggle />
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>

@@ -51,8 +51,8 @@ export function Footer() {
   return (
     <footer className="border-t border-border bg-background">
       <div className="container py-16">
-        <div className="grid gap-12 lg:grid-cols-[1.4fr_repeat(4,1fr)]">
-          <div className="space-y-4">
+        <div className="grid grid-cols-2 gap-10 sm:gap-12 lg:grid-cols-[1.4fr_repeat(4,1fr)]">
+          <div className="col-span-2 space-y-4 lg:col-span-1">
             <Link href="/" className="font-serif text-2xl font-semibold tracking-tight">
               STYLE<span className="text-gold">HUB</span>
             </Link>

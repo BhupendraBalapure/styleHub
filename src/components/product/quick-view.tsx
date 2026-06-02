@@ -51,7 +51,7 @@ export function QuickView({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl overflow-hidden p-0 sm:rounded-2xl">
+      <DialogContent className="max-h-[92vh] max-w-3xl overflow-y-auto p-0 sm:rounded-2xl">
         <div className="grid gap-0 md:grid-cols-2">
           <div className="relative aspect-[3/4] bg-muted md:aspect-auto">
             <Image
